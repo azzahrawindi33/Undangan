@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan Raihananda & Savira</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- RESET & BACKGROUND DASAR --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png'), linear-gradient(135deg, #e6dace, #f5f0eb);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; 
+            perspective: 1500px;
+        }
+
+        h1, h2, h3, .font-estetik {
+            font-family: 'Cormorant Garamond', serif;
+            color: #8c6b4a;
+        }
+
+        /* --- EFEK KELOPAK BUNGA JATUH --- */
+        #sakura-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .petal {
+            position: absolute;
+            background-color: #ffd1dc;
+            border-radius: 15px 0px 15px 0px;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* --- CONTAINER BUKU 3D --- */
+        .book-container {
+            width: 90%;
+            max-width: 450px;
+            height: 85vh;
+            position: relative;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .page {
+            width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0;
+            border-radius: 15px;
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            background-color: #fff;
+            backface-visibility: hidden;
+        }
+
+        /* --- COVER (SAMPUL DEPAN) --- */
+        .cover {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80') center/cover;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            border: 2px solid #d4af37;
+        }
+        .cover h1 { color: white; font-size: 38px; margin: 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); text-align: center; }
+        .cover p { font-size: 14px; letter-spacing: 2px; }
+        .open-btn {
+            margin-top: 30px; padding: 10px 25px;
+            background: rgba(255,255,255,0.2); border: 1px solid white;
+            color: white; border-radius: 30px; backdrop-filter: blur(5px);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        /* --- ISI BUKU (CONTENT) --- */
+        .content {
+            z-index: 1;
+            background-color: #faf8f5;
+            overflow-y: auto; 
+            overflow-x: hidden;
+            border: 1px solid #e0d4c8;
+        }
+        .content::-webkit-scrollbar { width: 5px; }
+        .content::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+
+        .section { padding: 40px 20px; text-align: center; border-bottom: 1px dashed #d4af37; }
+        
+        /* Foto Mempelai */
+        .couple-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #8c6b4a; margin-bottom: 10px; }
+        
+        /* Kartu Info */
+        .info-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 15px 0; }
+        .info-card i { color: #8c6b4a; font-size: 24px; margin-bottom: 10px; }
+
+        /* Hitung Mundur */
+        .countdown { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .time-box { background: #8c6b4a; color: white; padding: 10px; border-radius: 8px; width: 50px; }
+        .time-box span { font-size: 20px; font-weight: bold; font-family: 'Cormorant Garamond', serif; display: block; }
+        .time-box p { font-size: 10px; margin: 0; }
+
+        /* Galeri Grid */
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .gallery-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+
+        /* Tombol Aksi */
+        .btn-action { display: inline-block; padding: 12px 25px; background: #8c6b4a; color: white; text-decoration: none; border-radius: 30px; margin-top: 15px; font-size: 14px; }
+        
+        /* Buku Terbuka */
+        .book-container.open .cover { transform: rotateY(-130deg); opacity: 0; pointer-events: none; }
+
+        /* --- TOMBOL MUSIK --- */
+        .btn-musik { position: fixed; bottom: 20px; right: 20px; background: #8c6b4a; color: white; width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        .spin { animation: spin 3s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="sakura-container"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="yovie.mp3" type="audio/mpeg">
+    </audio>
+
+    <button class="btn-musik" id="musicBtn" onclick="toggleMusic()">
+        <i class="fas fa-compact-disc"></i>
+    </button>
+
+    <div class="book-container" id="myBook">
+        
+        <div class="page content">
+            
+            <div class="section">
+                <h2 style="font-size: 24px;">Om Swastiastu / Assalamualaikum</h2>
+                <p style="font-size: 13px; line-height: 1.6;">Dengan memohon rahmat dan rida Tuhan Yang Maha Esa, kami bermaksud menyelenggarakan acara pernikahan putra-putri kami:</p>
+                
+                <div style="margin-top: 30px;">
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&q=80" alt="Mempelai Pria" class="couple-img">
+                    <h3 style="margin:0;">Raihananda Chandra Madani, S.pd</h3>
+                    <p style="font-size: 12px; color: #666;">Putra dari Bpk. Budi & Ibu Ani</p>
+                </div>
+                
+                <h1 style="margin: 10px 0;">&</h1>
+                
+                <div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80" alt="Mempelai Wanita" class="couple-img">
+                    <h3 style="margin:0;">Savira Andike, S.E</h3>
+                    <p style="font-size: 12px; color: #666;">Putri dari Bpk. Joko & Ibu Sri</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Waktu & Tempat</h2>
+                
+                <div class="countdown" id="countdown-timer">
+                    <div class="time-box"><span id="days">00</span><p>Hari</p></div>
+                    <div class="time-box"><span id="hours">00</span><p>Jam</p></div>
+                    <div class="time-box"><span id="minutes">00</span><p>Menit</p></div>
+                    <div class="time-box"><span id="seconds">00</span><p>Detik</p></div>
+                </div>
+
+                <div class="info-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3 style="margin:5px 0;">Resepsi Pernikahan</h3>
+                    <p style="font-size: 14px; margin:0;">Kamis, 31 Desember 2026<br>Pukul 11.00 WIB - Selesai</p>
+                </div>
+
+                <div class="info-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3 style="margin:5px 0;">Lokasi Acara</h3>
+                    <p style="font-size: 14px; margin:0; margin-bottom: 10px;">Gedung Serbaguna <br>Jl. Kenangan Indah No. 123</p>
+                    <a href="https://maps.google.com" target="_blank" class="btn-action"><i class="fas fa-map"></i> Buka Google Maps</a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Momen Bahagia</h2>
+                <div class="gallery-grid">
+                    <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&q=80" alt="Galeri 1">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=300&q=80" alt="Galeri 2">
+                    <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=300&q=80" alt="Galeri 3">
+                    <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=300&q=80" alt="Galeri 4">
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Amplop Digital</h2>
+                <div class="info-card" style="text-align: left;">
+                    <i class="fas fa-university"></i>
+                    <h3 style="margin: 0;">Bank BCA</h3>
+                    <p style="font-size: 20px; font-weight: bold; letter-spacing: 2px; margin: 5px 0;">1234 5678 90</p>
+                    <p style="margin: 0; font-size: 14px;">a.n Raihananda Chandra Madani</p>
+                </div>
+            </div>
+
+            <div class="section" style="border: none;">
+                <h2>RSVP</h2>
+                <p style="font-size: 14px;">Kehadiran Anda adalah hadiah terindah bagi kami.</p>
+                <a href="https://wa.me/6281234567890?text=Halo,%20saya%20akan%20hadir%20di%20acara%20pernikahan%20Indra%20dan%20Savira" target="_blank" class="btn-action" style="background: #25D366;"><i class="fab fa-whatsapp"></i> Konfirmasi Kehadiran</a>
+                <br><br><br>
+                <button onclick="tutupBuku()" style="background: none; border: 1px solid #8c6b4a; color: #8c6b4a; padding: 5px 15px; border-radius: 20px; cursor: pointer;">Tutup Undangan</button>
+            </div>
+
+        </div>
+
+        <div class="page cover" onclick="bukaBuku()">
+            <p>THE WEDDING OF</p>
+            <h1>Raihananda & Savira</h1>
+            <p>31 . 12 . 2026</p>
+            <div class="open-btn">Buka Undangan</div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. LOGIKA BUKA TUTUP BUKU & OTOMATIS PUTAR MUSIK
+        const book = document.getElementById('myBook');
+        const audio = document.getElementById("bgMusic");
+        const musicBtn = document.getElementById("musicBtn");
+        let isMusicPlaying = false;
+
+        function bukaBuku() {
+            book.classList.add('open');
+            if (!isMusicPlaying) {
+                audio.play();
+                musicBtn.classList.add('spin');
+                isMusicPlaying = true;
+            }
+        }
+
+        function tutupBuku() {
+            book.classList.remove('open');
+        }
+
+        // 2. LOGIKA TOMBOL MUSIK
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                audio.pause();
+                musicBtn.classList.remove('spin');
+            } else {
+                audio.play();
+                musicBtn.classList.add('spin');
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // 3. LOGIKA HITUNG MUNDUR (COUNTDOWN)
+        const targetDate = new Date("Dec 31, 2026 11:00:00").getTime();
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+        }, 1000);
+
+        // 4. EFEK KELOPAK BUNGA (PARTICLES JAVASCRIPT)
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            
+            const size = Math.random() * 10 + 5;
+            petal.style.width = size + 'px';
+            petal.style.height = size + 'px';
+            
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 5 + 5 + 's';
+            
+            document.getElementById('sakura-container').appendChild(petal);
+            
+            setTimeout(() => { petal.remove(); }, 10000);
+        }
+        
+        setInterval(createPetal, 300);
+    </script>
+</body>
+</html>
